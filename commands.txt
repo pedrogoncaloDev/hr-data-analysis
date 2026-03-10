@@ -1,0 +1,23 @@
+# Criar o venv (dentro da pasta do projeto)
+python -m venv venv
+
+# Ativar — Linux/Mac
+source venv/bin/activate
+
+# Ativar — Windows
+venv\Scripts\activate
+
+# Você verá o nome do venv no terminal:
+(venv) $
+
+# Instalar dependências normalmente
+pip install pandas sqlalchemy psycopg2
+
+# Salvar as dependências do projeto
+pip freeze > requirements.txt
+
+# Quando outra pessoa clonar o projeto, instala tudo com:
+pip install -r requirements.txt
+
+# Desativar o venv
+deactivate
