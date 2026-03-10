@@ -1,6 +1,7 @@
 from etl.extractor import  ExtractorExcel
 from etl.transformer import DataFrameSchema, TransformerExcel
-from database_setup import DatabaseSetup
+from etl.loader import Loader
+from database.database_setup import DatabaseSetup
 
 import os
 from dotenv import load_dotenv
@@ -39,13 +40,21 @@ df_departments_transformed = result['departments']
 # Load
 load_dotenv()
 
-setup = DatabaseSetup(
-    host=os.getenv("DB_HOST"),
-    port=int(os.getenv("DB_PORT")),
-    user=os.getenv("DB_USER"),
-    password=os.getenv("DB_PASSWORD"),
-    db_name=os.getenv("DB_NAME"),
-    driver=os.getenv("DB_DRIVER")
-)
+conn_params = {
+    "host"    : os.getenv("DB_HOST"),
+    "port"    : int(os.getenv("DB_PORT")),
+    "user"    : os.getenv("DB_USER"),
+    "password": os.getenv("DB_PASSWORD"),
+    "db_name" : os.getenv("DB_NAME"),
+    "driver"  : os.getenv("DB_DRIVER")
+}
 
-setup.run()
+DatabaseSetup(**conn_params).run()
+
+Loader(
+    primary_keys={
+        "employees"  : "func_id",
+        "departments": "dep_id"
+    },
+    **conn_params
+).load(result)

@@ -2,6 +2,7 @@ import logging
 from sqlalchemy import create_engine, text, inspect
 from sqlalchemy.orm import DeclarativeBase
 from sqlalchemy import Column, Integer, String, Float, DateTime, Boolean
+from database.database_connection import DatabaseConnection
 
 logger = logging.getLogger(__name__)
 
@@ -12,7 +13,7 @@ class Base(DeclarativeBase):
 class Department(Base):
 	__tablename__ = "departments"
 
-	dep_id            = Column(Integer, primary_key=True)
+	dep_id            = Column(Integer, primary_key=True, autoincrement=False)
 	nome_departamento = Column(String(100), nullable=False)
 	gestor            = Column(String(100), nullable=False)
 	localizacao       = Column(String(100), nullable=False)
@@ -25,7 +26,7 @@ class Department(Base):
 class Employee(Base):
 	__tablename__ = "employees"
 
-	func_id              = Column(Integer, primary_key=True)
+	func_id              = Column(Integer, primary_key=True, autoincrement=False)
 	nome                 = Column(String(100), nullable=False)
 	dep_id               = Column(Integer, nullable=False)
 	cargo                = Column(String(100), nullable=False)
@@ -39,24 +40,7 @@ class Employee(Base):
 	ativo                = Column(Boolean, nullable=False)
 
 
-class DatabaseSetup:
-	def __init__(self, host: str, port: int, user: str, password: str, db_name: str, driver: str = "ODBC+Driver+17+for+SQL+Server"):
-		self.host     = host
-		self.port     = port
-		self.user     = user
-		self.password = password
-		self.db_name  = db_name
-		self.driver   = driver
-
-
-	def _build_url(self, database: str) -> str:
-		return (
-			f"mssql+pyodbc://{self.user}:{self.password}"
-			f"@{self.host}:{self.port}/{database}"
-			f"?driver={self.driver}"
-		)
-
-
+class DatabaseSetup(DatabaseConnection):
 	def _create_database(self) -> None:
 		try:
 			engine = create_engine(self._build_url("master"))
