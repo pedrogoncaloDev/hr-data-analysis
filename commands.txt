@@ -11,7 +11,7 @@ venv\Scripts\activate
 (venv) $
 
 # Instalar dependências normalmente
-pip install pandas sqlalchemy psycopg2
+pip install pandas sqlalchemy
 
 # Salvar as dependências do projeto
 pip freeze > requirements.txt
