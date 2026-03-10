@@ -1,13 +1,15 @@
 from etl.extractor import  ExtractorExcel
 from etl.transformer import DataFrameSchema, TransformerExcel
+from database_setup import DatabaseSetup
 
+import os
+from dotenv import load_dotenv
 
 # extractor
 extractor_employees = ExtractorExcel("data/employees.xlsx")
 extractor_departaments = ExtractorExcel("data/departaments.xlsx")
 data_employees = extractor_employees.extract()
 data_departaments = extractor_departaments.extract()
-
 
 
 # transformer
@@ -34,7 +36,16 @@ df_employees_transformed = result['employees']
 df_departments_transformed = result['departments']
 
 
-# print(df_employees_transformed.head(), df_departments_transformed.head())
-print(df_employees_transformed.info(), df_departments_transformed.info())
+# Load
+load_dotenv()
 
+setup = DatabaseSetup(
+    host=os.getenv("DB_HOST"),
+    port=int(os.getenv("DB_PORT")),
+    user=os.getenv("DB_USER"),
+    password=os.getenv("DB_PASSWORD"),
+    db_name=os.getenv("DB_NAME"),
+    driver=os.getenv("DB_DRIVER")
+)
 
+setup.run()
